@@ -1,4 +1,9 @@
-# Docker Container for AI4Privacy Model
+<table>
+  <tr>
+    <td><img src="Imgs\Icon_AI_detection.png" alt="Project Icon" width="100"></td>
+    <td><h1># Docker Container for AI4Privacy Model</h1></td>
+  </tr>
+</table>
 
 This Dockerfile builds a container for deploying the AI4Privacy neural network model (distilbert_finetuned_ai4privacy_v2) used for PII detection on Google platforms.
 

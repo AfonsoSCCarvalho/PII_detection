@@ -1,5 +1,10 @@
-# Welcome to the Tutorial!
 
+<table>
+  <tr>
+    <td><img src="Imgs\Icon_AI_detection.png" alt="Project Icon" width="100"></td>
+    <td><h1># Welcome to the Tutorial!</h1></td>
+  </tr>
+</table>
 ## Getting Set Up
 
 ### Google Drive Setup

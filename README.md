@@ -1,4 +1,9 @@
-# PII Detection on Google Platforms
+<table>
+  <tr>
+    <td><img src="Imgs\Icon_AI_detection.png" alt="Project Icon" width="100"></td>
+    <td><h1>PII Detection on Google Platforms</h1></td>
+  </tr>
+</table>
 
 This project leverages the neural network developed by [AI4Privacy](https://ai4privacy.com/) to detect personally identifiable information (PII) across various Google platforms. It utilizes Docker for deployment in cloud environments, ensuring scalable and secure operations.
 
