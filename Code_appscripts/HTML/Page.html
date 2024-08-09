@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top">
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<script type="text/javascript">
+  google.charts.load('current', {packages: ['corechart', 'bar']});
+
+  function drawBarChart(entityData) {
+  google.charts.setOnLoadCallback(function() {
+    var data = new google.visualization.DataTable();
+    data.addColumn('string', 'Entity');
+    data.addColumn('number', 'Frequency');
+    data.addRows(entityData); // Assuming entityData is an array of [entity, frequency] pairs
+
+    var options = {
+      title: 'Top Entities',
+      width: 600,
+      height: 400,
+      legend: { position: 'none' },
+      hAxis: {
+        title: 'Frequency',
+      },
+      vAxis: {
+        title: 'Entities'
+      },
+      bars: 'horizontal'
+    };
+
+    var chart = new google.visualization.BarChart(document.getElementById('chart_div'));
+    chart.draw(data, options);
+  });
+}
+
+</script>
+
+<style>
+  html, body {
+    height: 100%;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+  }
+
+  #content {
+    width: 80%; /* Adjust the width as necessary */
+    max-width: 960px; /* Maximum width of the content area */
+  }
+
+  #chart_div {
+    width: 100%;
+    height: 500px;
+  }
+</style>
+
+
+  </head>
+  <body>
+    <div id="content">
+    <select id="modeSelection">
+      <option value="connect">Connect with Server</option>
+      <option value="test">Test JSON Parsing</option>
+    </select>
+    <input type="text" id="docId" placeholder="Enter Doc ID">
+    <button onclick="getProcessedText()">Process Document</button>
+    
+    <div id="preProcessedText">Pre-processed text will appear here</div>
+    <div id="connectionStatus"></div>
+    <div id="chart_div" style="width: 100%; height: 500px;"></div>
+    <div id="processedText">Processed text will appear here</div>
+    <div id="taggingMessage" style="display: none;">Your current tagging says your document is: "No personal information". However, sensitive personal information was detected. Do you wish to change it?</div>
+    <button id="changeTaggingButton" onclick="changeTagging()" style="display: none;">Change Tagging</button>
+
+
+
+    </div>
+
+    <script>
+
+      function getProcessedText() {
+        var mode = document.getElementById('modeSelection').value;
+        var docId = document.getElementById('docId').value;
+        if (!docId) {
+          alert('Please enter a document ID.');
+          return;
+        }
+        // Show the processing message
+        document.getElementById('connectionStatus').innerText = 'Processing your document...';
+
+        if (mode === 'test') {
+          google.script.run.withSuccessHandler(onSuccess).withFailureHandler(onFailure).simulateProcessDocument(docId);
+        } else {
+          google.script.run.withSuccessHandler(onSuccess).withFailureHandler(onFailure).processAndHandleDocument(docId);
+        }
+      }
+
+      function onSuccess(response) {
+        if (response.error) {
+          document.getElementById('connectionStatus').innerText = response.error;
+        } else {
+          document.getElementById('preProcessedText').innerText = "Pre-processed text: " + response.preProcessedText;
+          // Hide the processing message
+          document.getElementById('connectionStatus').innerText = '';
+          document.getElementById('connectionStatus').innerText = "Processing successful.";
+
+          var entities = response.processedEntities;
+          document.getElementById('processedText').innerText = "Processed entities: \n" + entities;
+          
+          // Parse the entities string into a format suitable for Google Charts
+          var entityFrequencies = parseEntities(entities);
+          var chartData = prepareChartData(entityFrequencies);
+          drawBarChart(chartData); // Call the function to draw the chart
+
+
+          if (response.sensitiveInfoDetected) {
+            document.getElementById('taggingMessage').style.display = 'block';
+            document.getElementById('changeTaggingButton').style.display = 'block';
+          } else {
+            document.getElementById('taggingMessage').style.display = 'none';
+            document.getElementById('changeTaggingButton').style.display = 'none';
+          }
+        }
+      }
+
+      function prepareChartData(entityFrequencies) {
+        var chartData = [];
+        for (var key in entityFrequencies) {
+          chartData.push([key, entityFrequencies[key]]);
+        }
+        // Sort the chartData based on frequency, and then slice to get top 10
+        chartData.sort(function(a, b) {
+          return b[1] - a[1];
+        });
+        return chartData.slice(0, 10);
+      }
+
+
+      function parseEntities(entitiesString) {
+        var entitiesArray = entitiesString.split('\n');
+        var entityFrequencies = {};
+        entitiesArray.forEach(function(line) {
+          var parts = line.split(': ');
+          var entity = parts[0];
+          var instances = parts[1].split(', ');
+          entityFrequencies[entity] = instances.length; // Count the number of words for each entity
+        });
+        return entityFrequencies;
+      }
+
+
+      function changeTagging() {
+        // Update the message to confirm that the tagging has been successfully changed
+        document.getElementById('taggingMessage').innerText = "Tagging successfully changed.";
+
+        // Optionally, hide the button after changing the tagging
+        document.getElementById('changeTaggingButton').style.display = 'none';
+      }
+
+      function onFailure(error) {
+        document.getElementById('connectionStatus').innerText = "Failed to process.";
+      }
+
+    </script>
+  </body>
+</html>

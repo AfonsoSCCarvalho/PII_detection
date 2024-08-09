@@ -2,8 +2,11 @@
 
 This project leverages the neural network developed by [AI4Privacy](https://ai4privacy.com/) to detect personally identifiable information (PII) across various Google platforms. It utilizes Docker for deployment in cloud environments, ensuring scalable and secure operations.
 
-![Data Framework](Imgs/PII_cloud.png)
-*Data Framework*
+<p align="center">
+  <img src="Imgs/PII_cloud.png" alt="Data Framework">
+  <br>
+  <em>Data Framework</em>
+</p>
 
 ## Project Overview
 
@@ -19,7 +22,7 @@ The project is integrated within a Google Site, using Google Apps Script for bot
 
 Follow the detailed guide on setting up and running this project in the most cost-effective manner on Google Cloud Platform:
 
-[Setup and Deployment Guide](Tutorial.md) 
+[Setup and Deployment Guide](Tutorial.md)
 
 ## Contributing
 
@@ -27,7 +30,7 @@ We encourage contributions to this project! If you have suggestions for improvem
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ## Acknowledgements
 
